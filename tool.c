@@ -57,7 +57,7 @@ int set_sockaddr(int domain,void *ip,void *port,struct sockaddr *addr){
 
 void fdhash_dump(void){
     FdContext *p,*q;
-    HASH_ITER(hh,state_hashmap,p,q){
+    HASH_ITER(hh,fdc_hashmap,p,q){
         printf("fd = %d\t",p->fd);
         switch(p->type){
             case SERVER_SOCKET:
@@ -65,12 +65,19 @@ void fdhash_dump(void){
                 break;
             case CLIENT_SOCKET:
                 printf("CLIENT_SOCKET\n");
-                printf("buffer:");
+                printf("rd_buf:");
                 for(int i=0;i<p->client.rd_buf_pos;++i){
                     putchar(p->client.rd_buf[i]);
                 }
                 putchar('\n');
-                printf("rd_buf_pos = %u\tstatus:%d\n",(unsigned int)p->client.rd_buf_pos,p->client.status);
+                printf("rd_buf_pos = %lu\tstatus:%d\n",p->client.rd_buf_pos,p->client.status);
+                
+                printf("tsk_buf:");
+                for(int i=0;i<p->client.task_buf_pos;++i){
+                    putchar(p->client.task_buf[i]);
+                }
+                putchar('\n');
+                printf("tsk_buf_pos = %lu\n",p->client.task_buf_pos);
                 char print_buf[29];
                 format_sockaddr(&p->client.sockaddr,print_buf);
                 printf("%s",print_buf);
@@ -78,10 +85,17 @@ void fdhash_dump(void){
             case IPC_FD:
                 printf("IPC_FD\t");
                 printf("type:%d\n",p->IPC.type);
-                printf("buffer:");
-                for(int i=0;i<p->IPC.pos;++i){
-                    putchar(p->IPC.buffer[i]);
+                printf("rd_buf:");
+                for(int i=0;i<p->IPC.rd_buf_pos;++i){
+                    putchar(p->IPC.rd_buf[i]);
                 }
+                printf("\nrd_buf_pos = %lu\n",p->IPC.rd_buf_pos);
+
+                printf("tsk_buf:");
+                for(int i=0;i<p->IPC.task_buf_pos;++i){
+                    putchar(p->IPC.task_buf[i]);
+                }
+                printf("\nrd_buf_pos = %lu\n",p->IPC.rd_buf_pos);
                 break;
             default:
         }

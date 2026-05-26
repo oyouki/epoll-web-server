@@ -16,7 +16,7 @@ int main(){
     inet_pton(AF_INET,SERVER_IP,&ipd);
     if(set_sockaddr(AF_INET,&ipd,&port,&addr))  perror("set sockaadr failed.");
     char cmd[CLI_ARG_BUFLEN],arg1[CLI_ARG_BUFLEN],arg2[CLI_ARG_BUFLEN];
-    char buf[CLI_TMP_BUFLEN];size_t len=0;
+    char buf[CLI_TMP_BUFLEN];ssize_t len=0;
     int cmd_code=-1;int arg_num=0;
 
     if((fd=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP))==-1)    perror("socket func error.");
@@ -39,7 +39,20 @@ int main(){
                 len+=PW_LEN;
                 build_lpmsg_inplace(buf,len,PREFIX_LENGTH);
                 len+=PREFIX_LENGTH;
-                send(fd,buf,len,0);
+                if(send(fd,buf,len,0)==-1){
+                    perror("main-send err");
+                }
+                if((len=recv(fd,buf,CLI_TMP_BUFLEN,0))==-1){
+                    perror("main-recv err");
+                }
+                switch(buf[4]){
+                    case CMD_SER2CLI_REG_FAIL:
+                        printf("REG FAILED\n");
+                        break;
+                    case CMD_SER2CLI_REG_SUC:
+                        printf("REG SUCCESS\n");
+                        break;
+                }
         }
     }
     return 0;

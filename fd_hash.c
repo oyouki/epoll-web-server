@@ -29,8 +29,10 @@ typedef struct{
         void* server;
         struct {
             enum IPC_type type;
-            char buffer[IPC_FDC_RD_BUFLEN];
-            size_t pos;
+            char rd_buf[SERVER_FDC_IPC_RD_BUFLEN];
+            size_t rd_buf_pos;
+            char task_buf[SERVER_FDC_IPC_TSK_BUFLEN];
+            size_t task_buf_pos;
         }IPC;
     };
     UT_hash_handle hh;
@@ -41,11 +43,11 @@ int fd_hash_add(int fd,FdContext *s);
 void fd_hash_remove(int fd);
 
 
-FdContext * state_hashmap;
+FdContext * fdc_hashmap;
 
 FdContext* fd_hash_find(int fd){
     FdContext *s=NULL;
-    HASH_FIND_INT(state_hashmap,&fd,s);
+    HASH_FIND_INT(fdc_hashmap,&fd,s);
     return s;
 }
 
@@ -53,7 +55,7 @@ int fd_hash_add(int fd,FdContext *s){
     if(fd_hash_find(fd)){
         return 1;
     }
-    HASH_ADD_INT(state_hashmap,fd,s);
+    HASH_ADD_INT(fdc_hashmap,fd,s);
     return 0;
 }
 
@@ -61,7 +63,7 @@ int fd_hash_add(int fd,FdContext *s){
 void fd_hash_remove(int fd){
     FdContext *s=fd_hash_find(fd);
     if(s){
-        HASH_DEL(state_hashmap,s);
+        HASH_DEL(fdc_hashmap,s);
         free(s);
     }
 }

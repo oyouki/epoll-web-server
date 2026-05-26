@@ -21,14 +21,15 @@
 
 //database.c
 #define DB_RD_BUFLEN   256      //数据库进程读取缓冲
-#define DB_TMP_BUFLEN  128      //数据库提取缓冲
+#define DB_TMP_BUFLEN  256      //数据库临时缓冲
 //client.c
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 8080
 //fd_hash.c
 #define SERVER_FDC_CLI_RD_BUFLEN 128    //服务器进程fdcontext中client读取缓冲
 #define SERVER_FDC_CLI_TSK_BUFLEN 128
-#define IPC_FDC_RD_BUFLEN 128           //服务器进程fdc中IPC读取缓冲
+#define SERVER_FDC_IPC_RD_BUFLEN 128           //服务器进程fdc中IPC读取缓冲
+#define SERVER_FDC_IPC_TSK_BUFLEN 128
 //server.c
 #define LOCAL_IPADDR "127.0.0.1"
 #define LOCAL_PORT 8080
@@ -57,6 +58,7 @@
 #define CMD_DB2SER_LOGIN_SUC 9
 #define CMD_DB2SER_ILLCMD 10    //非法命令
 #define CMD_SER2CLI_REG_FAIL 11
+#define CMD_SER2CLI_REG_SUC 12
 
 void set_cmd(char* buf,int cmd);
 int get_cmd(char* buf);

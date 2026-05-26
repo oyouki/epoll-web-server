@@ -32,7 +32,7 @@ int main(){
     }
 
     char buf[DB_RD_BUFLEN]={0};size_t buf_pos=0;
-    char tmp_buf[DB_TMP_BUFLEN]; size_t tmp_pos=0;
+    char tmp_buf[DB_TMP_BUFLEN]; ssize_t tmp_pos=0;
     int r=-2;
     printf("数据库进程就绪,开始循环.\n");
     while(1){
@@ -75,7 +75,7 @@ int main(){
                 case 0:     //正常读到一条,处理
                     aim=db_parse_msg(tmp_buf,&tmp_pos,&func);
                     if(aim==0){     //查询类
-                        if(func(tmp_buf,&tmp_pos,conn)){    //使用func查询
+                        if(func(tmp_buf,&tmp_pos,conn)){    //使用func查询如果异常
                             errno=EINVAL;
                             perror("func() err");
                             return -1;
