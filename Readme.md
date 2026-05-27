@@ -1,4 +1,18 @@
 ### epoll并发服务器框架
+project/
+├── include/
+│   ├── ser_cli_std.h
+│   └── tool.h
+├── src/
+│   ├── fd_hash.c
+│   ├── tool.c
+│   ├── server.c
+│   ├── server_logic.c
+│   └── db_logic.c
+│   ├── db.c
+│   ├── client.c
+└── README.md
+
     服务器使用一个epoll对象统一管理listen socket、client socket、子进程IPC————Unix Domain Socket。
 服务器主进程启动后为所有套接字和后续accept所得套接字(设置为非阻塞)分配保存状态、说明信息、读写缓冲的结构体FdContext，
 并使用现成的uthash.h库保存到哈希表，随后将FdContext的指针随着套接字文件描述符以ET模式注册到epoll。
